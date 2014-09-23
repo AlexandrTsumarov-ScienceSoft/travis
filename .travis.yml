@@ -2,7 +2,7 @@ language: php
 php:
   - 5.4
 
-script: php codeception.phar run --html --steps
+script: php codecept.phar run --html --steps
 
 deploy:
     provider: ec2
