@@ -15,10 +15,7 @@ deploy:
     region: "us-east-1b"
     upload-dir: "/vagrant/"
     skip_cleanup: true
-    secret_access_key:
-        secure: jz/3d3O663IPdpq3O4yJ3jTr+8wa2g0GOqssZ5YJ
-    access_key_id:
-        secure: AKIAI2I5TT7NOAUWZ32A
+
     local-dir: vagrant
     on:
         branch: master
