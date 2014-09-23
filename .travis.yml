@@ -1,9 +1,24 @@
 language: php
+
 php:
   - 5.4
 
+  install:
+  - pip install -r requirements.txt --use-mirrors
+  - sudo apt-get update -q
+  - sudo apt-get install -q virtualbox --fix-missing # Everything falls apart here exactly.
+  - sudo wget -nv http://files.vagrantup.com/packages/7e400d00a3c5a0fdf2809c8b5001a035415a607b/vagrant_1.2.2_x86_64.deb
+  - sudo dpkg -i vagrant_1.2.2_x86_64.deb
+  - sudo vagrant plugin install vagrant-plugin-bundler
+  
 before_script: df -h
 
-script: php codecept.phar run --html --steps
+script: 
+  - cd vagrant
+  - sudo vagrant up # The error is only presented when executing vagrant up
+  - cd ../
+  - php codecept.phar run --html --steps
 
-after_script: df -h
+after-script:
+  - sudo vagrant halt
+  - sudo vagrant destroy
