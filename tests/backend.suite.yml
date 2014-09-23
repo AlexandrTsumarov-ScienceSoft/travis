@@ -1,0 +1,20 @@
+class_name: BackendTester
+modules:
+    enabled:
+        - WebDriver
+        - CommonHelper
+    config:
+      WebDriver:
+         url: 'http://54.235.193.4/'
+         host: 'hub.browserstack.com'
+         browser: firefox
+         restart: false
+         clear_cookies: false
+         window_size: 1280x102
+         wait: 5
+         capabilities:
+             unexpectedAlertBehaviour: 'accept'
+             browserstack.user: 'vadzimbelski1'
+             browserstack.key : 'hsqp6CZxe4EWEzqSU2gX'
+             browserVersion: '21.0'
+             browserstack.debug: 'true'
