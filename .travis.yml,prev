@@ -1,0 +1,17 @@
+language: php
+php:
+  - 5.4
+
+script: php codecept.phar run --html --steps
+
+deploy:
+    provider: ec2
+    access-key-id: "AKIAI2I5TT7NOAUWZ32A"
+    secret-access-key: "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"
+    endpoint: "ec2-54-235-193-4.compute-1.amazonaws.com"
+    region: "us-east-1b"
+    upload-dir: "/vagrant/"
+    skip_cleanup: true
+    local-dir: vagrant
+    on:
+        branch: master
