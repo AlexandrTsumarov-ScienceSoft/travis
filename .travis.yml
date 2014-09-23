@@ -7,10 +7,10 @@ install:
   - sudo dpkg -i vagrant_1.2.2_x86_64.deb
   - sudo vagrant plugin install vagrant-plugin-bundler
 script: 
-  - cd vagrant
-  - sudo vagrant up # The error is only presented when executing vagrant up
-  - cd ../
+# - cd vagrant
+#- sudo vagrant up # The error is only presented when executing vagrant up
+#- cd ../
   - php codecept.phar run --html --steps
 after_script:
-  - sudo vagrant halt
-  - sudo vagrant destroy
+#- sudo vagrant halt
+#- sudo vagrant destroy
