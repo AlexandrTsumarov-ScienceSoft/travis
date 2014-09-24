@@ -1,0 +1,10 @@
+---
+last_check: {}
+checked_completion: true
+completion_version: 1.7.2
+endpoints:
+  https://api.travis-ci.org/:
+    access_token: rqSqDLXgJ__Jl9RcLU9DJQ
+repos:
+  AlexandrTsumarov-ScienceSoft/travis:
+    endpoint: https://api.travis-ci.org/
