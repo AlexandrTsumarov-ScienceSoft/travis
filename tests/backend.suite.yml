@@ -18,4 +18,3 @@ modules:
              browserstack.key : 'hsqp6CZxe4EWEzqSU2gX'
              browserVersion: '21.0'
              browserstack.debug: 'true'
-			 
