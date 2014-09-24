@@ -11,7 +11,9 @@ script:
 #- sudo vagrant up # The error is only presented when executing vagrant up
 #- cd ../
   - php codecept.phar run --html --steps -g dev
-  - php codecept.phar run --html --steps
+  - php codecept.phar run --html --steps -g UI1
+  - php codecept.phar run --html --steps -g UI2
+  - php codecept.phar run --html --steps -g UI3
 after_script:
 #- sudo vagrant halt
 #- sudo vagrant destroy
