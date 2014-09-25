@@ -21,3 +21,4 @@ script:
 after_script:
 - sudo vagrant halt
 - sudo vagrant destroy
+
