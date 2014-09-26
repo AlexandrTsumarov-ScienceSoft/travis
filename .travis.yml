@@ -1,0 +1,22 @@
+language: php
+php:
+- 5.4
+before_install:
+- mv config.yaml vagrant/
+install:
+- sudo apt-get install -q virtualbox --fix-missing
+- sudo wget -nv http://files.vagrantup.com/packages/7e400d00a3c5a0fdf2809c8b5001a035415a607b/vagrant_1.2.2_x86_64.deb
+- sudo dpkg -i vagrant_1.2.2_x86_64.deb
+- sudo vagrant plugin install vagrant-plugin-bundler
+- sudo vagrant plugin install vagrant-aws
+- sudo vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
+script:
+- cd vagrant/
+- sudo vagrant up --provider=aws
+- php codecept.phar run --steps --html
+after_script:
+- sudo vagrant halt
+- sudo vagrant destroy
+env:
+  global:
+    secure: QGA7ca58VduzccOOTDP2ebkChQcM/vWBxW2tHgPOKnhlJVJZBdjqvdTuh8taW19+Nq7Dr6SVSKO4D1j4AnXeQxHveghJeYtjMtNox38dBJUJ9SGuOcRwEUbQaV9EAZfCjO8xOHk7NQv8DN7gmEPHUS+tOT0qesy5v4sSCpHZBeM=
