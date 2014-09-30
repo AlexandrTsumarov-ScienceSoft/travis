@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
 		aws.keypair_name = data['keypair_name']
 		aws.ami = data['ami']
 
-		override.ssh.private_key_path = 'avahura.pem'
+		override.ssh.private_key_path = '../key.pem'
 		override.ssh.username = "ubuntu"
 	end
 

@@ -19,69 +19,66 @@ class CategoryDefaultPriceModule extends BaseModule {
     public static $messageCategoryPriceChanged = "All posts in category {category_name} have a default price of {category_price}";
 
     /**
-     * P.33
      * Create Category Default Price
      * @param $category_name
      * @param $category_default_price
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function createCategoryDefaultPrice($category_name, $category_default_price) {
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Open LaterPay plugin page pricing tab');
+        //Open LaterPay plugin page pricing tab
         $I->amOnPage(self::$baseUrl);
         $I->click(self::$adminMenuPluginButton);
         $I->click(self::$pluginPricingTab);
 
-        $I->amGoingTo('Add category default price');
+        //Add category default price
         $I->click(self::$pricingAddCategoryButton);
-        $I->seeElement(self::$pricingCategorySelect);
-        $I->seeElement(self::$pricingSaveLink);
-        $I->seeElement(self::$pricingCancelLink);
+        $I->waitForElement(self::$pricingCategorySelect, BaseModule::$shortTimeout);
+        $I->waitForElement(self::$pricingSaveLink, BaseModule::$shortTimeout);
+        $I->waitForElement(self::$pricingCancelLink, BaseModule::$shortTimeout);
 
-        $I->amGoingTo('Cancel category default price');
+        //Cancel category default price
         $I->click(self::$pricingCancelLink);
-        $I->seeElement(self::$pricingAddCategoryButton);
-        $I->dontSeeElement(self::$pricingCancelLink);
-        $I->dontSeeElement(self::$pricingSaveLink);
+        $I->waitForElement(self::$pricingAddCategoryButton);
+        $I->waitForElementNotVisible(self::$pricingCancelLink, BaseModule::$averageTimeout);
+        $I->waitForElementNotVisible(self::$pricingSaveLink, BaseModule::$averageTimeout);
 
-        $I->amGoingTo('Add category default price');
+        //Add category default price
         $I->click(self::$pricingAddCategoryButton);
-        $I->seeElement(self::$pricingCategorySelect);
-        $I->seeElement(self::$pricingSaveLink);
-        $I->seeElement(self::$pricingCancelLink);
+        $I->waitForElement(self::$pricingCategorySelect, BaseModule::$shortTimeout);
+        $I->waitForElement(self::$pricingSaveLink, BaseModule::$shortTimeout);
+        $I->waitForElement(self::$pricingCancelLink, BaseModule::$shortTimeout);
+
 
         $messageCategoryPriceSaveText = str_replace(
                 array('{category_name}', '{category_price}'), array($category_name, $category_default_price), self::$messageCategoryPriceSave
         );
 
-        $I->amGoingTo('Fill and save category default price');
+        //Fill and save category default price
         $I->click(self::$pricingCategorySelect);
         $I->wait(self::$veryShortTimeout);
         $I->click('.select2-results .select2-result');
         $I->fillField(self::$pricingPriceInput, $category_default_price);
         $I->click(self::$pricingSaveLink);
         $I->waitForText($messageCategoryPriceSaveText, self::$shortTimeout, self::$messageArea);
-        $I->seeElement(self::$pricingChangeLink);
-        $I->seeElement(self::$pricingDeleteLink);
-        $I->dontSeeElement(self::$pricingCancelLink);
-        $I->dontSeeElement(self::$pricingSaveLink);
+        $I->waitForElement(self::$pricingChangeLink, BaseModule::$shortTimeout);
+        $I->waitForElement(self::$pricingDeleteLink, BaseModule::$shortTimeout);
+        $I->waitForElementNotVisible(self::$pricingCancelLink, BaseModule::$shortTimeout);
+        $I->waitForElementNotVisible(self::$pricingSaveLink, BaseModule::$shortTimeout);
 
         return $this;
     }
 
     /**
-     * P.37
      * Delete category default price
      * @param $category_name
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function deleteCategoryDefaultPrice($category_name) {
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Open LaterPay plugin page pricing tab');
+        //Open LaterPay plugin page pricing tab
         $I->amOnPage(self::$baseUrl);
         $I->click(self::$adminMenuPluginButton);
         $I->click(self::$pluginPricingTab);
@@ -90,7 +87,7 @@ class CategoryDefaultPriceModule extends BaseModule {
                 '{category_name}', $category_name, self::$messageCategoryPriceDeleted
         );
 
-        $I->amGoingTo('Delete category default price');
+        //Delete category default price
         //TODO: implement deletion of concrete category
         $I->click(self::$pricingDeleteLink);
         $I->waitForText($messageCategoryPriceDeleteText, self::$shortTimeout, self::$messageArea);
@@ -99,29 +96,26 @@ class CategoryDefaultPriceModule extends BaseModule {
     }
 
     /**
-     * P.35
      * Change category default price
      * @param $category_name
      * @param $new_category_default_price
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function changeCategoryDefaultPrice($category_name, $new_category_default_price) {
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Open LaterPay plugin page pricing tab');
+        //Open LaterPay plugin page pricing tab
         $I->amOnPage(self::$baseUrl);
         $I->click(self::$adminMenuPluginButton);
         $I->click(self::$pluginPricingTab);
 
-        $I->amGoingTo('Change category default price');
-        //TODO: implement change of concrete category
+        //Change category default price
         $I->click(self::$pricingChangeLink);
         $I->seeElement(self::$pricingCategorySelect);
         $I->seeElement(self::$pricingSaveLink);
         $I->seeElement(self::$pricingCancelLink);
 
-        $I->amGoingTo('Fill and save category default price');
+        //Fill and save category default price
         $I->fillField(self::$pricingPriceInput, $new_category_default_price);
         $I->click(self::$pricingSaveLink);
         $I->seeElement(self::$pricingChangeLink);
@@ -137,8 +131,8 @@ class CategoryDefaultPriceModule extends BaseModule {
     }
 
     /**
-     * To UI29
-     * @author Alex Vahura <avahura@scnsoft.com>
+     * Validate Category Price
+     * @return $this
      */
     public function validateCategoryPrice() {
         $I = $this->BackendTester;
@@ -147,9 +141,11 @@ class CategoryDefaultPriceModule extends BaseModule {
         $I->click(self::$adminMenuPluginButton);
         $I->click(self::$pluginPricingTab);
 
-        $I->amGoingTo('Validate Category Price');
+        //Validate Category Price
         BackendModule::of($I)
                 ->validatePrice(self::$pricingPriceInputSaved, self::$pricingChangeLink, self::$pricingSaveLinkSaved);
+
+        return $this;
     }
 
 }

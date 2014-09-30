@@ -50,10 +50,11 @@ class PostModule extends BaseModule {
     //purschase at LaterPay server
     public static $lpServerLinkJsGetter = " var str = jQuery('a[class=\"lp_purchase-link lp_button\"]').last().attr('data-laterpay'); return str; ";
     public static $lpServerVisitorLoginLink = 'Log in to LaterPay';
+    public static $lpServerVisitorLoginClass = '.selen-button-login';
     public static $lpServerVisitorLoginFrameName = 'wrapper';
-    public static $lpServerVisitorEmailField = 'username';
+    public static $lpServerVisitorEmailField = '#id_username';
     public static $lpServerVisitorEmailValue = 'atsumarov@scnsoft.com';
-    public static $lpServerVisitorPasswordField = 'password';
+    public static $lpServerVisitorPasswordField = '#id_password';
     public static $lpServerVisitorPasswordValue = 'atsumarov@scnsoft.com1';
     public static $lpServerVisitorLoginBtn = 'Log In';
     public static $lpServerVisitorBuyBtn = '#nextbuttons';
@@ -61,7 +62,7 @@ class PostModule extends BaseModule {
     public static $samplePdfFile = 'pdf-sample.pdf';
 
     /**
-     * P.26
+     * Create test post
      * @param $title
      * @param $content
      * @param null $categories
@@ -76,12 +77,12 @@ class PostModule extends BaseModule {
         $I = $this->BackendTester;
 
         $I->amOnPage(PostModule::$pagePostNew);
-        $I->amGoingTo('Set post title');
+        //Set post title
         $I->fillField(PostModule::$fieldTitle, $title);
 
         $content = str_replace(array("\r", "\n"), '', $content);
 
-        $I->amGoingTo('Set post content');
+        //Set post content
         $I->click(PostModule::$contentText);
         $I->fillField(PostModule::$contentId, $content);
 
@@ -89,13 +90,13 @@ class PostModule extends BaseModule {
         if ($teaser) {
             $teaser_content = $this->_createTeaserContent($content, $teaser);
 
-            $I->amGoingTo('Set teaser content');
+            //Set teaser content
             $I->click(PostModule::$teaserContentText);
             $I->fillField(PostModule::$teaserContentId, $teaser_content);
         }
 
         if ($categories) {
-            $I->amGoingTo('Set categories to post');
+            //Set categories to post
             if (is_array($categories)) {
                 foreach ($categories as $category_id) {
                     $this->assignPostToCategory($category_id);
@@ -108,26 +109,26 @@ class PostModule extends BaseModule {
         switch ($price_type) {
 
             case 'global default price':
-                $I->amGoingTo('Choose global default price type');
+                //Choose global default price type
                 $I->tryClick($I, PostModule::$linkGlobalDefaultPrice);
                 break;
 
             case 'category default price':
-                $I->amGoingTo('Choose category default price type');
+                //Choose category default price typ
                 $I->tryClick($I, PostModule::$linkCategoryPrice);
                 break;
 
             case 'individual price':
-                $I->amGoingTo('Choose individual price type');
+                //Choose individual price type
                 $I->click(PostModule::$linkIndividualPrice);
                 if ($price) {
-                    $I->amGoingTo('Set price');
+                    //Set price
                     $I->fillField(PostModule::$fieldPrice, $price);
                 }
                 break;
 
             case 'dynamic individual price':
-                $I->amGoingTo('Choose individual dynamic price type');
+                //Choose individual dynamic price type
 
                 if (is_array($price)) {
                     $start_price = $price['start_price'];
@@ -154,7 +155,7 @@ class PostModule extends BaseModule {
         }
 
         if ($files) {
-            $I->amGoingTo('Attach files to post');
+            //Attach files to post
             $I->click(PostModule::$linkAddMedia);
             $I->click('Upload Files', PostModule::$linkMediaRouter);
             $I->click(PostModule::$linkAttachFile);
@@ -162,7 +163,7 @@ class PostModule extends BaseModule {
             $I->click(PostModule::$linkAddFileLinkToContent);
         }
 
-        $I->amGoingTo('Publish post');
+        //Publish post
         $I->click(PostModule::$linkPublish);
         $I->wait(PostModule::$veryShortTimeout);
 
@@ -176,7 +177,6 @@ class PostModule extends BaseModule {
     }
 
     /**
-     * P.38-29
      * Check Post for LaterPay Elements
      * @param $post
      * @param null $price_type
@@ -194,7 +194,7 @@ class PostModule extends BaseModule {
 
         $content = str_replace("\r\n", '', $content);
 
-        $I->amGoingTo('Check Post For LaterPay Elements');
+        //Check Post For LaterPay Elements
         if ((int) $post > 0) {
             $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostEdit));
         } elseif ($title) {
@@ -230,12 +230,11 @@ class PostModule extends BaseModule {
                 break;
         }
 
-        $I->amGoingTo('Publish post');
+        //Publish post
         $I->click(PostModule::$linkPublish);
         $I->wait(PostModule::$veryShortTimeout);
 
-        $I->amGoingTo('Edit post');
-
+        //Edit post
         if ((int) $post > 0) {
             $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostEdit));
         } elseif ($title) {
@@ -247,24 +246,25 @@ class PostModule extends BaseModule {
             $I->seeInField(PostModule::$fieldTitle, $title);
 
         if ($price != '0.00') {
-            $I->amGoingTo('Switch Preview toggle to “Visitor”');
+
+            $I->comment('Switch Preview toggle to “Visitor”');
             $I->click(PostModule::$linkViewPost);
             if (!$I->tryCheckbox($I, PostModule::$linkPreviewSwitcherElement))
                 $I->click(PostModule::$linkPreviewSwitcher);
-            $I->seeElementInDOM(PostModule::$visibleLaterpayStatistics); /* It`s not a best way to check, such as hidden elements will pass the test too. But used iframe doesn`t has a name attribute, so there`s no way to switch to it (see $I->switchToIFrame usage). */
-            $I->see($currency, PostModule::$visibleLaterpayPurchaseButton);
-            $I->see($price, PostModule::$visibleLaterpayPurchaseButton);
+            $I->seeElementInDOM(PostModule::$visibleLaterpayStatistics);
+            $I->see($currency);
+            $I->see($price);
             $teaser_content = null;
             if ($teaser) {
                 $teaser_content = $this->_createTeaserContent($content, $teaser);
                 $I->see($teaser_content, PostModule::$visibleLaterpayTeaserContent);
             }
 
-            $I->amGoingTo('Switch Preview toggle to “Admin”');
+            $I->comment('Switch Preview toggle to “Admin”');
             if ($I->tryCheckbox($I, PostModule::$linkPreviewSwitcherElement))
                 $I->click(PostModule::$linkPreviewSwitcher);
             $I->seeElementInDOM(PostModule::$visibleLaterpayStatistics);
-            $I->cantSee(PostModule::$visibleLaterpayPurchaseButton);
+            $I->waitForElementNotVisible(PostModule::$visibleLaterpayPurchaseButton, BaseModule::$shortTimeout);
 
             //Must be there, such as contect with short codes can`t be checked
             if ($content)
@@ -273,16 +273,16 @@ class PostModule extends BaseModule {
             if ($teaser)
                 $I->cantSee($teaser_content, PostModule::$visibleLaterpayTeaserContent);
 
-            $I->amGoingTo('Go to the Post Overview page');
+            $I->comment('Go to the Post Overview page');
             $I->amOnPage(PostModule::$pagePostList);
             $I->see($price, PostModule::$pageListPriceCol);
             $I->see($price_type, PostModule::$pageListPricetypeCol);
 
-            $I->amGoingTo('Check If plugin is tested in live mode');
+            //Check If plugin is tested in live mode
             if (!ModesModule::of($I)->checkIsTestMode()) {
 
                 $previewModeTeaserOnly = ModesModule::of($I)->checkPreviewMode();
-                $I->amGoingTo('Check post on front');
+                //Check post on front
                 BackendModule::of($I)->logout();
                 $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostFrontView));
                 $I->cantSeeElementInDOM(PostModule::$visibleLaterpayStatistics);
@@ -306,29 +306,26 @@ class PostModule extends BaseModule {
                 };
             };
         } else {
-            $I->amGoingTo('
-                Skip because of empty price:
-                Switch Preview toggle to “Visitor”.
-                Switch Preview toggle to “Admin”.
-                Go to the Post Overview page.
-                Check If plugin is tested in live mode.
-                ');
+            //Skip because of empty price:
+            //Switch Preview toggle to “Visitor”.
+            //Switch Preview toggle to “Admin”.
+            //Go to the Post Overview page.
+            //Check If plugin is tested in live mode.
         };
 
         return $this;
     }
 
     /**
-     * P.23
+     * Purchase post
      * @param $post
      * @return $this
-     * @author Alex Tsumarov <atsumarov@scnsoft.com>
      */
     public function purchasePost($post, $price = null, $currency = null, $title = null, $content = null) {
 
         $I = $this->BackendTester;
 
-        $I->amGoingTo('purchase post');
+        //purchase post
 
         $content = str_replace("\r\n", '', $content);
 
@@ -358,34 +355,20 @@ class PostModule extends BaseModule {
             } elseif ($previewMode == 'overlay') {
 
                 $I->seeElement(PostModule::$visibleLaterpayPurchaseBenefits);
-                ////CHECK TEASER HERE //$I->see(substr($content, 0, 60), PostModule::$visibleLaterpayTeaserContent);
+                ////CHECK TEASER HERE
                 $I->see($price, 'a');
                 $I->see($currency, 'a');
             };
-        };
 
-        //$I->see(substr($content, 0, 60), PostModule::$visibleLaterpayTeaserContent);
-
-        if ($price != '0.00') {
-
-            $I->amGoingTo('Click the LaterPay Purchase Button and purchase the content');
-
+            //Click the LaterPay Purchase Button and purchase the content
             $this->purschaseAtServer($post);
-
             $I->cantSeeElementInDOM(PostModule::$visibleLaterpayStatistics);
-
             $I->cantSeeElement(PostModule::$visibleLaterpayPurchaseButton);
-
             $I->cantSeeElement(PostModule::$visibleLaterpayPurchaseLink);
-
             $I->cantSeeElement(PostModule::$visibleLaterpayPurchaseBenefits);
-
             $I->seeInPageSource($content);
         } else {
-
-            $I->amGoingTo('
-                Skip because of empty price:
-                Click the LaterPay Purchase Button and purchase the content.');
+            //Skip because of empty price: Click the LaterPay Purchase Button and purchase the content.
         };
 
         BackendModule::of($I)->login();
@@ -396,16 +379,14 @@ class PostModule extends BaseModule {
     }
 
     /**
-     * @param $category_id
-     * @param null $post
-     * Descriptoin:
      * Proceed with post purschase throught LaterPay Server
      * Can`t get iframe content with codeception. The iframe has no name attribute and target iframe placed into child iframe (document->iframe->iframe)
      * Can`t use javascript while error "Blocked a frame from accessing a cross-origin frame."
      * So used switching "WebDriver config url"
      * As note: $I->executeJS(" document.getElementsByTagName('iframe')[0].contentDocument.getElementById('id_username').value = 'atsumarov@scnsoft.com'; ");
+     * @param $category_id
+     * @param null $post
      * @return $this
-     * @author Alex Tsumarov <atsumarov@scnsoft.com>
      */
     public function purschaseAtServer($post) {
 
@@ -413,8 +394,7 @@ class PostModule extends BaseModule {
 
         BackendModule::of($I)->logout();
 
-        $I->amGoingTo('Purshase the post');
-
+        //Purshase the post
         //It must be there. Cause of switching domain issue.
         $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostFrontView));
 
@@ -427,8 +407,12 @@ class PostModule extends BaseModule {
         $I->amOnPage($laterpayPage);
         $I->wait(PostModule::$averageTimeout);
 
+        $I->tryClick($I, PostModule::$lpServerVisitorLoginClass);
         $I->tryClick($I, PostModule::$lpServerVisitorLoginLink);
+        $I->wait(BaseModule::$averageTimeout);
+
         $I->switchToIFrame(PostModule::$lpServerVisitorLoginFrameName);
+        $I->waitForElement(PostModule::$lpServerVisitorEmailField, BaseModule::$averageTimeout);
         $I->fillField(PostModule::$lpServerVisitorEmailField, PostModule::$lpServerVisitorEmailValue);
         $I->fillField(PostModule::$lpServerVisitorPasswordField, PostModule::$lpServerVisitorPasswordValue);
         $I->click(PostModule::$lpServerVisitorLoginBtn);
@@ -443,10 +427,10 @@ class PostModule extends BaseModule {
     }
 
     /**
+     * Unassign post from category
      * @param $category
      * @param null $post
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function unassignPostFromCategory($category_id, $post = null) {
 
@@ -469,10 +453,10 @@ class PostModule extends BaseModule {
     }
 
     /**
+     * Assign post to category
      * @param $category_id
      * @param null $post
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function assignPostToCategory($category_id, $post = null) {
 
@@ -495,10 +479,9 @@ class PostModule extends BaseModule {
     }
 
     /**
-     * P.23
+     * Store created post ID
      * @param $post
      * @return $this
-     * @author Alex Tsumarov <atsumarov@scnsoft.com>
      */
     private function _storeCreatedPostId() {
 
@@ -521,22 +504,22 @@ class PostModule extends BaseModule {
     }
 
     /**
+     * Change Individual Price
      * @param $post
      * @param $price
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function changeIndividualPrice($post, $price) {
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Open post for edit');
+        //Open post for edit
         $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostEdit));
 
-        $I->amGoingTo('Change individual price');
+        //Change individual price
         $I->click(PostModule::$linkIndividualPrice);
         $I->fillField(PostModule::$fieldPrice, $price);
 
-        $I->amGoingTo('Update post');
+        //Update post
         $I->click(PostModule::$linkPublish);
         $I->wait(PostModule::$veryShortTimeout);
 
@@ -544,17 +527,15 @@ class PostModule extends BaseModule {
     }
 
     /**
-     * P.40
      * Check if Files are Protected
      * @param $post
      * @param $file_name
      * @return $this
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     public function checkIfFilesAreProtected($post, $file_name) {
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Open post for edit');
+        //Open post for edit
         $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostEdit));
 
         $I->click(self::$linkViewPost);
@@ -579,7 +560,6 @@ class PostModule extends BaseModule {
     }
 
     /**
-     * P. 41
      * Check if a Correct Shortcode is Displayed Correctly
      * @param $post
      * @param $price
@@ -588,8 +568,7 @@ class PostModule extends BaseModule {
     public function checkIfCorrectShortcodeIsDisplayedCorrectly($post, $price) {
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Check how correct shortcode displayed');
-
+        //Check how correct shortcode displayed
         if ($price > 0) {
 
             $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostEdit));
@@ -606,7 +585,6 @@ class PostModule extends BaseModule {
     }
 
     /**
-     * P.42
      * Check if a Wrong Shortcode is Displayed Correctly
      * @param $post
      * @param $price
@@ -616,7 +594,7 @@ class PostModule extends BaseModule {
 
         $I = $this->BackendTester;
 
-        $I->amGoingTo('Check how wrong shortcode displayed');
+        //Check how wrong shortcode displayed
 
         if ($price > 0) {
 
@@ -631,10 +609,10 @@ class PostModule extends BaseModule {
     }
 
     /**
+     * Create teaser content
      * @param $content
      * @param $teaser
      * @return string
-     * @author Alex Vahura <avahura@scnsoft.com>
      */
     private function _createTeaserContent($content, $teaser) {
         //original $teaser_content = explode(' ', strip_tags($content), $teaser + 1);
@@ -645,16 +623,19 @@ class PostModule extends BaseModule {
     }
 
     /**
+     * Validate individual price
      * @param $post
-     * @author Alex Vahura <avahura@scnsoft.com>
+     * @return $this
      */
     public function validateIndividualPrice($post) {
         $I = $this->BackendTester;
         $I->amOnPage(str_replace('{post}', $post, PostModule::$pagePostEdit));
 
-        $I->amGoingTo('Validate Individual Price');
+        //Validate Individual Price
         BackendModule::of($I)
                 ->validatePrice(PostModule::$fieldPrice, PostModule::$linkIndividualPrice, PostModule::$linkPublish);
+
+        return $this;
     }
 
 }

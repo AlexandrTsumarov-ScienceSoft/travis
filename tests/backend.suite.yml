@@ -7,14 +7,12 @@ modules:
       WebDriver:
          url: 'http://54.235.193.4/'
          host: {host}
+         "max-duration": 36000
          browser: firefox
          restart: false
          clear_cookies: false
-         window_size: 1280x102
-         wait: 5
+         window_size: 1280x1024
          capabilities:
-             unexpectedAlertBehaviour: 'accept'
-             browserstack.user: 'vadzimbelski1'
-             browserstack.key : 'hsqp6CZxe4EWEzqSU2gX'
-             browserVersion: '21.0'
-             browserstack.debug: 'true'
+            unexpectedAlertBehaviour: 'accept'
+            browserVersion: '21.0'
+            browserstack.debug: 'true'
