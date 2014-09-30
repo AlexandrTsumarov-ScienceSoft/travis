@@ -9,11 +9,9 @@ before_install:
   -in 2.config.yaml.enc -out 2.config.yaml -d
 install: 
 script:
-- cat config.yaml
-- echo $access_key_id
 - cp 2.config.yaml test.yaml
-- cat test.yaml
 - sed "s/{access_key_id}/$access_key_id/" config.yaml > config.yaml.2
 - cat config.yaml.2
 - cat config.yaml
+- cat test.yaml
 after_script: 
