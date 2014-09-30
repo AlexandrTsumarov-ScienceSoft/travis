@@ -10,6 +10,6 @@ before_install:
 install: 
 script:
 - cat 2.config.yaml
+- sed "s/{access_key_id}/$access_key_id/" config.yaml > config.yaml
 - cat config.yaml
-- echo $access_key_id
 after_script: 
