@@ -8,5 +8,5 @@ before_install:
   -in 2.config.yaml.enc -out 2.config.yaml -d
 install: 
 script: 
-- cat config.yaml
+- cat 2.config.yaml
 after_script: 
