@@ -952,9 +952,7 @@ class SetupPluginCest {
      */
     public function dev(BackendTester $I) {
 
-        BackendModule::of($I)->login();
-
-        ModesModule::of($I)->switchToTestMode();
+        BackendModule::of($I)->login()->logout();
     }
 
 }
