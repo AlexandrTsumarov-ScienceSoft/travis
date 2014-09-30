@@ -1,0 +1,15 @@
+--- #AWS settings
+  access_key_id:
+    bla
+
+  secret_access_key:
+    {secret_access_key}
+
+  instance_type:
+    "t1.micro"
+
+  keypair_name:
+    "avahura"
+
+  ami:
+    {ami}
