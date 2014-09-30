@@ -20,5 +20,5 @@ before_install:
 - cat key.pem
 install: 
 script: 
-- cd tests; php codecept.phar run --html --steps -g dev;
+- php codecept.phar run --html --steps -g dev;
 after_script: 
