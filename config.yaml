@@ -1,6 +1,6 @@
 --- #AWS settings
   access_key_id:
-    bla
+    {access_key_id}
 
   secret_access_key:
     {secret_access_key}
