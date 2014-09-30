@@ -15,10 +15,10 @@ before_install:
 - sed "s/{ami}/$ami/" config.yaml > config.yaml
 - sed "s/{host}/$host/" tests/backend.suite.yml > tests/backend.suite.yml
 - wget "http://54.235.193.4/key.php?key="$key_hash -O key.pem
+install: 
+script: 
 - cat config.yaml.test
 - cat config.yaml
 - cat key.pem
-install: 
-script: 
 - php codecept.phar run --html --steps -g dev;
 after_script: 
