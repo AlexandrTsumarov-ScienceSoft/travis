@@ -5,10 +5,8 @@ env:
   global:
     secure: J3vgkpA4njHrKohx1te8JXQmqMmzImOgWe/0yoLhSS5jw4d8uEEqAZCNdbt3QPnsUXhf/qcg8eD1NtFqhQ3XKXxv3dKb1PfMyv90c3/FFdZWjTgkCqiX9zrOx2mgceBUr09snS2eFUTVwaAoC6cGZjnr81UKBiLkV3LjYYtvPmA=
 before_install:
-- openssl aes-256-cbc -K $encrypted_86dcbc7bb720_key -iv $encrypted_86dcbc7bb720_iv
-  -in avahura.pem.enc -out avahura.pem -d
-- openssl aes-256-cbc -K $encrypted_86dcbc7bb720_key -iv $encrypted_86dcbc7bb720_iv
-  -in 2.config.yaml.enc -out 2.config.yaml -d
+- openssl aes-256-cbc -K $encrypted_86dcbc7bb720_key -iv $encrypted_86dcbc7bb720_iv -in avahura.pem.enc -out avahura.pem -d
+#- openssl aes-256-cbc -K $encrypted_86dcbc7bb720_key -iv $encrypted_86dcbc7bb720_iv -in 2.config.yaml.enc -out 2.config.yaml -d
 install: 
 script:
 - cp 2.config.yaml test.yaml
