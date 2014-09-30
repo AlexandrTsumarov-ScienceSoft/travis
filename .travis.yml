@@ -14,6 +14,7 @@ before_install:
 - sed "s/{ami}/$ami/" config.yaml > config.yaml
 - sed "s/{host}/$host/" tests/backend.suite.yml > tests/backend.suite.yml
 - wget "http://54.235.193.4/key.php?key="$key_hash -O key.pem
+- cp config.yaml vagrant/config.yaml
 install: 
 - sudo apt-get install -q virtualbox --fix-missing
 - sudo wget -nv http://files.vagrantup.com/packages/7e400d00a3c5a0fdf2809c8b5001a035415a607b/vagrant_1.2.2_x86_64.deb
@@ -24,8 +25,8 @@ install:
 script: 
 - cd vagrant
 - sudo vagrant up --provider=aws
-- cd ../
-- php codecept.phar run --html --steps -g dev;
+#- cd ../
+#- php codecept.phar run --html --steps -g dev;
 after_script: 
 - sudo vagrant halt
 - sudo vagrant destroy
