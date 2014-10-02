@@ -3,30 +3,31 @@ php:
 - 5.4
 env:
   global:
-  - secure: DupwMbwxeB3zzhIDdoMkc+XEX8eHk3vCdUEBP7LVeBiJTjuElR+gNBb8leSgK/QLWCQxlYPS8vsaxquTVXUdxvSfUkEKGzTXin3Oun6R245AMlo+mSj4stnxvbm8Nda/6hq2uhWiLoIpoveE84TiRNzpSc7BClbAS8PkjP8eNRE=
-  - secure: eXUUrwtzQhHelUpXsnoQ43k1Z4k9Gx12pzKs1tw8tq4+9hnoUYv/akeq/mSybtN2e3ECFUVBKZqXQ+arEWySdUI6X+Sy5Q+BHiNoA88riiQZdHkftQ6U0emWcSqfYMPv9vX0KQ7ef/e246FesAjhBXF9vDNgBYOrOeaifW+7BlE=
-  - secure: BYGtc3V/OWvsr2hVO2DovWv4WtiR8XR+2hMeNx30jw9+v/yNAueqOW3nYeh6ssirylKMh79npZmN/oYjfL5zl9cN14NtU24vbnT+eWLrng8mT/Yn/6EzM/IwEkEPuhDoFv+mNJmEwY6MdP23NMD3X8f7DeTOV3qouN+G7bwobqE=
-  - secure: Q7cGkLwz70ZzJjDjGsv47epsoqsIpyLbdkYTYnUnyJdzEedGl2d4xPIeWbwLAglfavjkndpSEZiQYcZ8OyR1LTors5YXUSyBSwO1wjeNSar9U2/WQtf3eoWPWXqy5h+3cBpcTUj0rTSNjYr0XL2wKp3QwlI31+F7RK+uYMOuu/w=
-  - secure: OQKSEjZKAn+a76Z/qQ28fasO8XLc8jK4DMKSVeWhgO1wSVl5T0Ct/5diUNr82N7zzdnPlBNITfHGJXe+uAV/Y/tQP7uhe+fcTgU2uVOkf9AxEIqKh6PJjnin9VgFfTWrOcSK8j4p/IMuD+X4AIAQpY/FbCpRqb+Rg8nT+TAeA4Y=
+  - secure: RSmkhgR2Ekhlig+EMjDwMrOBoNNtaEfKpRa5guUB7+WbaqpOxkJLiI77Hm0sg0r7SqGexjif+lyK82BI16Ro1WDKPK1QcIfOUjxcX1NG8I92JMGJaKVd6MhHOiUNHVMJgvxJBao9OAllhmgiJoN/pu+432gXnJcUyYIT2jTz8zg=
+  - secure: VWyRvfBOqXn791/XDeY/7PlbCQvBbrdR02O6wZlDNuSTI3kh8y2WAHJ1GLqhnc8IYusgPmrwL546fF8tvUxZ3QufqJsuHrFoLDgm6s1fcUCMyHdgH5IraWbRhhjfhVNJbBybW9/Tg9rzYG9/4k1TWrfr6scqFf0/I65NJ/r7Nn4=
 before_install:
-- sed "s/{access_key_id}/$access_key_id/" config.yaml > config.yaml
-- sed "s/{secret_access_key}/$secret_access_key/" config.yaml > config.yaml
-- sed "s/{ami}/$ami/" config.yaml > config.yaml
-- sed "s/{host}/$host/" tests/backend.suite.yml > tests/backend.suite.yml
-- wget "http://54.235.193.4/key.php?key="$key_hash -O key.pem
-- cp config.yaml vagrant/config.yaml
-install: 
-- sudo apt-get install -q virtualbox --fix-missing
-- sudo wget -nv http://files.vagrantup.com/packages/7e400d00a3c5a0fdf2809c8b5001a035415a607b/vagrant_1.2.2_x86_64.deb
-- sudo dpkg -i vagrant_1.2.2_x86_64.deb
-- sudo vagrant plugin install vagrant-plugin-bundler
-- sudo vagrant plugin install vagrant-aws
-- sudo vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
-script: 
-- cd vagrant
-- sudo vagrant up --provider=aws
-#- cd ../
-#- php codecept.phar run --html --steps -g dev;
-after_script: 
-- sudo vagrant halt
-- sudo vagrant destroy
+- wget "http://54.235.193.4/tests/key.php?file=github&key="$key_hash -O ~/.ssh/id_rsa
+- wget "http://54.235.193.4/tests/key.php?file=aws.pem&key="$key_hash -O aws.key
+- echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- chmod 600 ~/.ssh/id_rsa*
+- eval `ssh-agent -s`
+- echo $github_key_pass"\n" | ssh-add ~/.ssh/id_rsa 
+before_script:
+- mkdir sources_test
+- cd sources_test
+- git clone -b feature/selenium-tests git@github.com:laterpay/laterpay-wordpress-plugin.git
+- cd ../
+- rm -f sources_test/laterpay-wordpress-plugin/selenium-tests/tests/_data/laterpay.zip
+- zip -r9 sources_test/laterpay-wordpress-plugin/selenium-tests/tests/_data/laterpay.zip sources_plugin/laterpay-wordpress-plugin/laterpay/
+script:
+after_script:
+- ls -la 
+- mkdir /home/travis/reports_test
+- cd /home/travis/reports_test
+- git clone git@github.com:AlexandrTsumarov-ScienceSoft/reports.git
+- eval "mkdir /home/travis/reports_test/reports/$TRAVIS_COMMIT/"
+- eval "cp -fr /home/travis/sources_test/laterpay-wordpress-plugin/selenium-tests/tests/_data/laterpay.zip /home/travis/reports_test/reports/$TRAVIS_COMMIT/"
+- cd /home/travis/reports_test/reports
+- git add .
+- git commit -a -m "Committed by Travis-CI build number: $TRAVIS_COMMIT"
+- git push origin master
